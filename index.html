@@ -1,817 +1,836 @@
 <!DOCTYPE html>
-
 <html lang="ru">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>AI Character Builder</title>
-
+  <title>NeuroGab AI Model Builder</title>
   <style>
-
     :root {
-
-      --bg: #0d0d0d;
-
-      --card: #151515;
-
-      --card-2: #1c1c1c;
-
-      --yellow: #f5c400;
-
-      --yellow-soft: #ffd84d;
-
-      --text: #ffffff;
-
-      --muted: #a7a7a7;
-
-      --border: #2a2a2a;
-
+      --bg: #0b0b16;
+      --panel: #111123;
+      --panel2: #17172d;
+      --border: #29294a;
+      --muted: #7f86ad;
+      --text: #f5f6ff;
+      --accent: #f5c400;
+      --accentSoft: #ffe176;
+      --accentBg: rgba(245,196,0,.12);
     }
-
-
 
     * { box-sizing: border-box; }
 
-
-
     body {
-
       margin: 0;
-
-      background: radial-gradient(circle at top, #25210f 0%, var(--bg) 42%, #050505 100%);
-
+      background: var(--bg);
+      color: var(--text);
       font-family: Inter, Arial, sans-serif;
-
-      color: var(--text);
-
     }
 
-
-
-    .builder-wrap {
-
-      width: 100%;
-
-      min-height: 100vh;
-
-      padding: 56px 20px;
-
-    }
-
-
-
-    .builder {
-
-      max-width: 1120px;
-
+    .ng-app {
+      max-width: 1420px;
       margin: 0 auto;
-
+      padding: 0 28px 28px;
+      background: var(--bg);
+      color: var(--text);
     }
 
-
-
-    .hero {
-
-      text-align: center;
-
-      margin-bottom: 34px;
-
-    }
-
-
-
-    .badge {
-
-      display: inline-flex;
-
-      align-items: center;
-
-      gap: 8px;
-
-      padding: 8px 14px;
-
-      border: 1px solid rgba(245, 196, 0, 0.35);
-
-      border-radius: 999px;
-
-      background: rgba(245, 196, 0, 0.08);
-
-      color: var(--yellow-soft);
-
-      font-size: 13px;
-
-      letter-spacing: 0.4px;
-
-      margin-bottom: 18px;
-
-    }
-
-
-
-    h1 {
-
-      font-size: clamp(38px, 7vw, 76px);
-
-      line-height: 0.95;
-
-      margin: 0;
-
-      letter-spacing: -2px;
-
-    }
-
-
-
-    h1 span { color: var(--yellow); }
-
-
-
-    .subtitle {
-
-      max-width: 680px;
-
-      margin: 20px auto 0;
-
-      color: var(--muted);
-
-      font-size: 18px;
-
-      line-height: 1.55;
-
-    }
-
-
-
-    .grid {
-
-      display: grid;
-
-      grid-template-columns: 1.05fr 0.95fr;
-
-      gap: 22px;
-
-      align-items: start;
-
-    }
-
-
-
-    .panel {
-
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
-
-      border: 1px solid var(--border);
-
-      border-radius: 28px;
-
-      padding: 24px;
-
-      box-shadow: 0 24px 70px rgba(0,0,0,0.45);
-
-      backdrop-filter: blur(12px);
-
-    }
-
-
-
-    .panel-title {
-
+    .ng-topbar {
+      height: 54px;
       display: flex;
-
+      align-items: center;
       justify-content: space-between;
-
-      align-items: center;
-
-      gap: 16px;
-
-      margin-bottom: 20px;
-
+      border-bottom: 1px solid var(--border);
     }
 
-
-
-    .panel-title h2 {
-
-      font-size: 22px;
-
-      margin: 0;
-
+    .ng-brand {
+      font-weight: 900;
+      font-size: 18px;
+      background: linear-gradient(90deg,var(--accent),#fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-
-
-    .counter {
-
-      color: var(--yellow);
-
-      font-size: 13px;
-
-      background: rgba(245,196,0,0.1);
-
-      border: 1px solid rgba(245,196,0,0.25);
-
-      border-radius: 999px;
-
-      padding: 7px 11px;
-
-      white-space: nowrap;
-
-    }
-
-
-
-    .form-grid {
-
-      display: grid;
-
-      grid-template-columns: 1fr 1fr;
-
-      gap: 16px;
-
-    }
-
-
-
-    .field.full { grid-column: 1 / -1; }
-
-
-
-    label {
-
-      display: block;
-
-      color: #e9e9e9;
-
-      font-size: 13px;
-
-      margin-bottom: 8px;
-
-    }
-
-
-
-    select, input, textarea {
-
-      width: 100%;
-
-      background: var(--card);
-
-      color: var(--text);
-
+    .ng-reset {
+      background: transparent;
+      color: var(--muted);
       border: 1px solid var(--border);
-
-      border-radius: 16px;
-
-      padding: 14px 14px;
-
-      font-size: 14px;
-
-      outline: none;
-
-      transition: 0.2s ease;
-
-    }
-
-
-
-    select:focus, input:focus, textarea:focus {
-
-      border-color: rgba(245,196,0,0.8);
-
-      box-shadow: 0 0 0 4px rgba(245,196,0,0.08);
-
-    }
-
-
-
-    textarea {
-
-      min-height: 190px;
-
-      resize: vertical;
-
-      line-height: 1.55;
-
-    }
-
-
-
-    .prompt-box {
-
-      background: #090909;
-
-      border: 1px solid rgba(245,196,0,0.25);
-
-      border-radius: 22px;
-
-      padding: 18px;
-
-      min-height: 260px;
-
-      color: #f1f1f1;
-
-      line-height: 1.65;
-
-      font-size: 15px;
-
-      white-space: pre-wrap;
-
-    }
-
-
-
-    .actions {
-
-      display: grid;
-
-      grid-template-columns: 1fr 1fr;
-
-      gap: 12px;
-
-      margin-top: 16px;
-
-    }
-
-
-
-    button {
-
-      border: none;
-
-      border-radius: 16px;
-
-      padding: 15px 18px;
-
-      font-size: 15px;
-
-      font-weight: 700;
-
+      border-radius: 8px;
+      padding: 8px 16px;
       cursor: pointer;
-
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-
     }
 
-
-
-    .copy {
-
-      background: var(--yellow);
-
-      color: #090909;
-
-      box-shadow: 0 12px 30px rgba(245,196,0,0.22);
-
+    .ng-reset:hover {
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
-
-
-    .reset {
-
-      background: var(--card-2);
-
-      color: var(--text);
-
-      border: 1px solid var(--border);
-
+    .ng-layout {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      min-height: 560px;
     }
 
-
-
-    button:hover {
-
-      transform: translateY(-2px);
-
+    .ng-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 14px 0;
     }
 
-
-
-    .note {
-
-      color: var(--muted);
-
-      font-size: 13px;
-
-      line-height: 1.55;
-
-      margin-top: 16px;
-
-    }
-
-
-
-    .toast {
-
-      display: none;
-
-      margin-top: 12px;
-
-      color: var(--yellow);
-
-      font-size: 14px;
-
-    }
-
-
-
-    .chips {
-
+    .ng-step {
+      height: 45px;
       display: flex;
-
-      flex-wrap: wrap;
-
-      gap: 8px;
-
-      margin-top: 18px;
-
-    }
-
-
-
-    .chip {
-
-      font-size: 12px;
-
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
       color: var(--muted);
-
-      border: 1px solid var(--border);
-
-      border-radius: 999px;
-
-      padding: 7px 10px;
-
-      background: rgba(255,255,255,0.03);
-
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      user-select: none;
     }
 
+    .ng-step.active {
+      background: rgba(245,196,0,.08);
+      border-left-color: var(--accent);
+      color: var(--accent);
+      font-weight: 900;
+    }
 
+    .ng-step.done {
+      color: #b6bbdc;
+    }
 
-    @media (max-width: 860px) {
+    .ng-num {
+      min-width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #2d315a;
+      color: #d8ddff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
 
-      .grid, .form-grid, .actions {
+    .ng-step.active .ng-num,
+    .ng-step.done .ng-num {
+      background: var(--accent);
+      color: #080808;
+    }
 
-        grid-template-columns: 1fr;
+    .ng-content {
+      padding: 22px 24px 170px;
+      min-height: 560px;
+    }
 
+    .ng-content h2 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      color: #fff;
+    }
+
+    .ng-subtitle {
+      color: var(--muted);
+      margin-bottom: 22px;
+      font-size: 15px;
+    }
+
+    .ng-group {
+      margin-bottom: 20px;
+    }
+
+    .ng-group-title {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .ng-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .ng-option {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 18px;
+      min-height: 42px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+
+    .ng-option:hover {
+      border-color: rgba(245,196,0,.6);
+      color: var(--accentSoft);
+    }
+
+    .ng-option.selected {
+      border-color: var(--accent);
+      background: var(--accentBg);
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    .ng-prompt-wrap {
+  position: relative;
+  z-index: 20;
+  margin-top: 30px;
+}
+
+    .ng-prompt-box {
+      background: #17172d;
+      border: 1px solid var(--border);
+      min-height: 155px;
+      padding: 16px 20px 26px;
+      box-shadow: 0 -20px 40px rgba(0,0,0,.22);
+      cursor: pointer;
+    }
+
+    .ng-prompt-head {
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .ng-count {
+      color: var(--muted);
+      font-weight: 400;
+      text-transform: none;
+      font-size: 12px;
+    }
+
+    .ng-prompt-text {
+      line-height: 1.55;
+      font-size: 15px;
+      color: #f7f7ff;
+    }
+
+    .ng-insert {
+      color: var(--accent);
+    }
+
+    .ng-copy-hint {
+      text-align: center;
+      color: #596086;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .ng-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 185px;
+      transform: translateX(-50%);
+      padding: 12px 18px;
+      background: var(--accent);
+      color: #070707;
+      border-radius: 999px;
+      font-weight: 900;
+      display: none;
+      z-index: 9999;
+    }
+
+    @media(max-width:820px){
+      .ng-app {
+        padding: 0 12px 28px;
       }
 
-      .builder-wrap { padding: 34px 14px; }
+      .ng-layout {
+        grid-template-columns: 1fr;
+      }
 
-      .panel { padding: 18px; border-radius: 22px; }
+      .ng-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        overflow-x: auto;
+        padding: 10px 0;
+      }
 
-      h1 { letter-spacing: -1px; }
+      .ng-step {
+        min-width: 118px;
+        border-left: 0;
+        border-bottom: 3px solid transparent;
+        padding: 0 10px;
+      }
 
+      .ng-step.active {
+        border-bottom-color: var(--accent);
+      }
+
+      .ng-content {
+  padding: 22px 24px 40px;
+      }
+
+      .ng-prompt-box {
+        max-height: 260px;
+        overflow: auto;
+      }
+
+      .ng-topbar {
+        height: auto;
+        padding: 14px 0;
+      }
     }
-
   </style>
-
 </head>
-
 <body>
 
-  <section class="builder-wrap">
+<div class="ng-app">
+  <div class="ng-topbar">
+    <div class="ng-brand">NeuroGab AI Model Builder</div>
+    <button class="ng-reset" onclick="resetBuilder()">Сбросить</button>
+  </div>
 
-    <div class="builder">
+  <div class="ng-layout">
+    <aside class="ng-sidebar" id="sidebar"></aside>
+    <main class="ng-content" id="content"></main>
+  </div>
 
-      <div class="hero">
-
-        <div class="badge">⚡ PROMPT BUILDER ДЛЯ НЕЙРОСЕТЕЙ</div>
-
-        <h1>AI Character <span>Builder</span></h1>
-
-        <p class="subtitle">Собери персонажа за 30 секунд: выбери параметры — и получи готовый промпт для генерации реалистичного героя.</p>
-
+  <div class="ng-prompt-wrap">
+    <div class="ng-prompt-box" onclick="copyPrompt()">
+      <div class="ng-prompt-head">
+        <span>Итоговый промпт</span>
+        <span class="ng-count" id="count">0 симв.</span>
       </div>
-
-
-
-      <div class="grid">
-
-        <div class="panel">
-
-          <div class="panel-title">
-
-            <h2>Настройки персонажа</h2>
-
-            <div class="counter">9 параметров</div>
-
-          </div>
-
-
-
-          <div class="form-grid">
-
-            <div class="field">
-
-              <label>Пол персонажа</label>
-
-              <select id="gender">
-
-                <option>male character</option>
-
-                <option>female character</option>
-
-                <option>androgynous character</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Возраст</label>
-
-              <select id="age">
-
-                <option>25 years old</option>
-
-                <option>18 years old</option>
-
-                <option>35 years old</option>
-
-                <option>45 years old</option>
-
-                <option>60 years old</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Типаж</label>
-
-              <select id="appearance">
-
-                <option>strong Slavic facial features, natural skin texture</option>
-
-                <option>soft elegant facial features, cinematic beauty</option>
-
-                <option>rugged expressive face, tired eyes</option>
-
-                <option>royal mysterious look, sharp cheekbones</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Одежда</label>
-
-              <select id="outfit">
-
-                <option>black oversized coat, minimal luxury styling</option>
-
-                <option>dark leather jacket, urban cinematic outfit</option>
-
-                <option>elegant black suit, modern editorial fashion</option>
-
-                <option>winter fur coat, expensive dramatic styling</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Локация</label>
-
-              <select id="location">
-
-                <option>foggy city street at night</option>
-
-                <option>dark luxury studio with black background</option>
-
-                <option>old mansion interior with cinematic haze</option>
-
-                <option>snowy urban courtyard with warm street lights</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Свет</label>
-
-              <select id="light">
-
-                <option>warm key light with cold blue shadows</option>
-
-                <option>soft golden rim light and deep contrast</option>
-
-                <option>dramatic low-key lighting with volumetric fog</option>
-
-                <option>neon reflections, glossy cinematic highlights</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Камера</label>
-
-              <select id="camera">
-
-                <option>85mm lens, shallow depth of field</option>
-
-                <option>35mm lens, handheld cinematic frame</option>
-
-                <option>50mm lens, editorial portrait composition</option>
-
-                <option>close-up portrait, ultra-detailed face</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field">
-
-              <label>Стиль</label>
-
-              <select id="style">
-
-                <option>ultra-realistic cinematic photo, 8K, film grain</option>
-
-                <option>high-end fashion editorial, glossy magazine style</option>
-
-                <option>dark music video still, modern Russian aesthetic</option>
-
-                <option>premium AI portrait, realistic skin, dramatic mood</option>
-
-              </select>
-
-            </div>
-
-
-
-            <div class="field full">
-
-              <label>Дополнительно</label>
-
-              <input id="extra" placeholder="Например: looking into camera, serious expression" value="looking into camera, serious calm expression" />
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-
-        <div class="panel">
-
-          <div class="panel-title">
-
-            <h2>Итоговый промпт</h2>
-
-            <div class="counter">готово</div>
-
-          </div>
-
-
-
-          <div id="prompt" class="prompt-box"></div>
-
-
-
-          <div class="actions">
-
-            <button class="copy" onclick="copyPrompt()">Скопировать промпт</button>
-
-            <button class="reset" onclick="resetBuilder()">Сбросить</button>
-
-          </div>
-
-          <div id="toast" class="toast">Промпт скопирован ✅</div>
-
-
-
-          <p class="note">Можно вставить этот блок в Tilda через T123 / HTML. Все параметры легко заменить под твои уроки, клуб или отдельные генераторы.</p>
-
-
-
-          <div class="chips">
-
-            <div class="chip">Nano Banana</div>
-
-            <div class="chip">Midjourney</div>
-
-            <div class="chip">Seedance</div>
-
-            <div class="chip">Kling</div>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      <div class="ng-prompt-text" id="prompt"></div>
+      <div class="ng-copy-hint">Нажмите на промпт, чтобы скопировать</div>
     </div>
+  </div>
+</div>
 
-  </section>
+<div class="ng-toast" id="toast">Промпт скопирован ✅</div>
 
+<script>
+const steps = [
+  {
+    id:'gender',
+    title:'Пол',
+    subtitle:'Пол персонажа',
+    groups:[
+      {
+        title:'Пол персонажа',
+        key:'gender',
+        options:[
+          ['Женский','красивой девушки'],
+          ['Мужской','красивого мужчины']
+        ]
+      }
+    ]
+  },
+  {
+    id:'age',
+    title:'Возраст',
+    subtitle:'Сколько лет персонажу?',
+    groups:[
+      {
+        title:'Возраст',
+        key:'age',
+        options:[
+          ['18','18 years old'],
+          ['20','20 years old'],
+          ['23','23 years old'],
+          ['25','25 years old'],
+          ['28','28 years old'],
+          ['30','30 years old'],
+          ['35','35 years old'],
+          ['40','40 years old'],
+          ['45','45 years old'],
+          ['50','50 years old']
+        ]
+      }
+    ]
+  },
+  {
+    id:'body',
+    title:'Фигура',
+    subtitle:'Телосложение и рост',
+    groups:[
+      {
+        title:'Телосложение',
+        key:'bodyType',
+        options:[
+          ['Очень хрупкое','very delicate slender figure'],
+          ['Худощавое','slim delicate figure'],
+          ['Стройное','lean graceful figure, balanced shoulders'],
+          ['Среднее','natural balanced figure, relaxed posture'],
+          ['Спортивное','toned athletic figure, confident posture'],
+          ['Пышное','soft curvy figure, elegant proportions'],
+          ['Полное','full soft figure, graceful proportions']
+        ]
+      },
+      {
+        title:'Рост',
+        key:'height',
+        options:[
+          ['Невысокий (150–157)','petite height, about 155 cm'],
+          ['Ниже среднего (158–163)','slightly below average height, about 161 cm'],
+          ['Средний (164–169)','average height, about 167 cm'],
+          ['Выше среднего (170–175)','above average height, about 173 cm'],
+          ['Высокий (176–181)','tall height, about 178 cm'],
+          ['Модельный (182+)','model-like tall height, about 182 cm']
+        ]
+      }
+    ]
+  },
+  {
+    id:'face',
+    title:'Лицо',
+    subtitle:'Форма, скулы, челюсть, подбородок',
+    groups:[
+      {
+        title:'Форма лица',
+        key:'faceShape',
+        options:[
+          ['Овальное','oval face shape'],
+          ['Вытянутое овальное','elongated oval face shape'],
+          ['Круглое','soft round face shape'],
+          ['Сердцевидное','heart-shaped face'],
+          ['Квадратное','soft square face shape'],
+          ['Прямоугольное','rectangular balanced face shape'],
+          ['Ромбовидное','diamond-shaped face']
+        ]
+      },
+      {
+        title:'Скулы',
+        key:'cheekbones',
+        options:[
+          ['Мягкие','soft natural cheekbones'],
+          ['Выраженные','defined natural cheekbones'],
+          ['Высокие','high elegant cheekbones'],
+          ['Скульптурные','sculpted refined cheekbones'],
+          ['Деликатные','delicate subtle cheekbones']
+        ]
+      },
+      {
+        title:'Челюсть',
+        key:'jawline',
+        options:[
+          ['Мягкая','soft jawline'],
+          ['Чёткая','clean defined jawline'],
+          ['Узкая','narrow refined jawline']
+        ]
+      },
+      {
+        title:'Подбородок',
+        key:'chin',
+        options:[
+          ['Аккуратный','neat chin'],
+          ['Сужающийся','tapered delicate chin'],
+          ['Выраженный','defined balanced chin'],
+          ['Мягкий','soft rounded chin']
+        ]
+      }
+    ]
+  },
+  {
+    id:'skin',
+    title:'Кожа',
+    subtitle:'Тон кожи',
+    groups:[
+      {
+        title:'Тон кожи',
+        key:'skin',
+        options:[
+          ['Очень светлая','porcelain fair skin, cool clean undertones, delicate luminous finish'],
+          ['Светлая нейтральная','fair neutral skin, balanced undertones, healthy luminous finish'],
+          ['Светлая тёплая','light warm skin, soft golden undertones, healthy luminous finish'],
+          ['Оливковая','olive skin, muted warm undertones, smooth luminous finish'],
+          ['Средиземноморская','Mediterranean warm skin, golden olive undertones, healthy glow'],
+          ['Загорелая','sun-kissed tan skin, warm golden undertones, healthy luminous finish'],
+          ['Средняя тёплая','medium warm skin, natural golden undertones, smooth healthy finish'],
+          ['Глубокая тёмная','deep dark skin, rich warm undertones, luminous polished finish']
+        ]
+      }
+    ]
+  },
+  {
+    id:'eyes',
+    title:'Глаза',
+    subtitle:'Цвет и форма',
+    groups:[
+      {
+        title:'Цвет',
+        key:'eyeColor',
+        options:[
+          ['Голубые','blue eyes'],
+          ['Серо-голубые','grey-blue eyes'],
+          ['Зелёные','green eyes'],
+          ['Светло-зелёные','light green eyes'],
+          ['Ореховые','hazel eyes'],
+          ['Янтарные','amber eyes'],
+          ['Светло-карие','light brown eyes'],
+          ['Тёмно-карие','dark brown eyes'],
+          ['Почти чёрные','almost black eyes']
+        ]
+      },
+      {
+        title:'Форма',
+        key:'eyeShape',
+        options:[
+          ['Миндалевидные','almond-shaped eyes'],
+          ['Крупные','large expressive eyes'],
+          ['Глубоко посаженные','deep-set eyes'],
+          ['Мягкие округлые','soft rounded eyes'],
+          ['Приподнятые уголки','slightly upturned eyes']
+        ]
+      }
+    ]
+  },
+  {
+    id:'expression',
+    title:'Выражение',
+    subtitle:'Эмоция и улыбка',
+    groups:[
+      {
+        title:'Выражение',
+        key:'expression',
+        options:[
+          ['Дружелюбное','warm approachable expression'],
+          ['Очень располагающее','very inviting gentle expression'],
+          ['Спокойное','calm serene expression'],
+          ['Премиальное','expensive composed editorial expression']
+        ]
+      },
+      {
+        title:'Улыбка',
+        key:'smile',
+        options:[
+          ['Без улыбки','neutral relaxed mouth'],
+          ['Лёгкая закрытая','subtle closed-lip smile'],
+          ['Уголками губ','slight smile with the corners of the lips']
+        ]
+      },
+      {
+        title:'Улыбка глазами',
+        key:'eyeSmile',
+        options:[
+          ['Нет',''],
+          ['Да','smiling with the eyes, soft squint, warm eye sparkle']
+        ]
+      }
+    ]
+  },
+  {
+    id:'brows',
+    title:'Брови',
+    subtitle:'Форма бровей',
+    groups:[
+      {
+        title:'Форма бровей',
+        key:'brows',
+        options:[
+          ['Прямые','straight natural brows'],
+          ['С мягкой аркой','soft arched brows'],
+          ['Выразительные','expressive defined brows'],
+          ['Густые','full natural brows'],
+          ['Тёмные густые','dark full brows'],
+          ['Аккуратные','neat natural brows']
+        ]
+      }
+    ]
+  },
+  {
+    id:'nose',
+    title:'Нос',
+    subtitle:'Форма носа',
+    groups:[
+      {
+        title:'Форма носа',
+        key:'nose',
+        options:[
+          ['Прямой','straight nose'],
+          ['Узкий','narrow refined nose'],
+          ['Аккуратный','neat delicate nose'],
+          ['Скульптурный','sculpted elegant nose'],
+          ['Мягкий натуральный','soft natural nose']
+        ]
+      }
+    ]
+  },
+  {
+    id:'lips',
+    title:'Губы',
+    subtitle:'Форма губ',
+    groups:[
+      {
+        title:'Форма губ',
+        key:'lips',
+        options:[
+          ['Естественно полные','naturally full lips'],
+          ['Средней полноты','medium-full lips'],
+          ['Мягко очерченные','softly defined lips'],
+          ['Более тонкие','slimmer delicate lips'],
+          ['Чёткий контур','clean defined lip shape']
+        ]
+      }
+    ]
+  },
+  {
+    id:'hair',
+    title:'Волосы',
+    subtitle:'Цвет, длина, текстура, укладка',
+    groups:[
+      {
+        title:'Цвет',
+        key:'hairColor',
+        options:[
+          ['Платиновый блонд','platinum blonde hair'],
+          ['Холодный блонд','cool blonde hair'],
+          ['Тёплый блонд','warm blonde hair'],
+          ['Тёмный блонд','dark blonde hair'],
+          ['Светло-русые','light brown-blonde hair'],
+          ['Русые','ash brown hair'],
+          ['Каштановые','chestnut brown hair'],
+          ['Тёмно-каштановые','dark chestnut hair'],
+          ['Шоколадные','chocolate brown hair'],
+          ['Чёрные','black hair']
+        ]
+      },
+      {
+        title:'Длина',
+        key:'hairLength',
+        options:[
+          ['Очень короткие','very short'],
+          ['Короткие','short'],
+          ['До подбородка','chin-length'],
+          ['Каре до плеч','shoulder-length bob'],
+          ['До плеч','shoulder-length'],
+          ['Ниже плеч','below shoulder length'],
+          ['Длинные','long'],
+          ['Очень длинные','very long']
+        ]
+      },
+      {
+        title:'Текстура',
+        key:'hairTexture',
+        options:[
+          ['Гладкие','smooth'],
+          ['Прямые','straight'],
+          ['Мягкая волна','soft wavy'],
+          ['Объёмные волны','voluminous waves'],
+          ['Лёгкие локоны','soft loose curls'],
+          ['Кудрявые','curly'],
+          ['Афро-кудри','afro curls']
+        ]
+      },
+      {
+        title:'Пробор',
+        key:'hairPart',
+        options:[
+          ['Центральный','center part'],
+          ['Почти центральный','slightly off-center part'],
+          ['Боковой','side part']
+        ]
+      },
+      {
+        title:'Укладка',
+        key:'hairStyle',
+        options:[
+          ['Объём у корней','root volume styling'],
+          ['Открывают лицо','face-framing styling'],
+          ['Не закрывают глаза','not covering the eyes'],
+          ['Гладкая','sleek polished styling'],
+          ['Небрежная luxury','soft effortless luxury styling']
+        ]
+      }
+    ]
+  },
+  {
+    id:'energy',
+    title:'Энергетика',
+    subtitle:'Общее впечатление',
+    groups:[
+      {
+        title:'Общее впечатление',
+        key:'energy',
+        options:[
+          ['Дружелюбная','friendly approachable energy'],
+          ['Дорогая и спокойная','expensive calm energy'],
+          ['Яркая запоминающаяся','bright memorable presence'],
+          ['Нежная','soft feminine energy'],
+          ['Уверенная','confident composed energy'],
+          ['Роскошная','luxury high-end energy']
+        ]
+      }
+    ]
+  }
+];
 
+const base = {
+  gender:'красивой девушки',
+  age:'',
+  bodyType:'',
+  height:'',
+  faceShape:'',
+  cheekbones:'',
+  jawline:'',
+  chin:'',
+  skin:'',
+  eyeColor:'',
+  eyeShape:'',
+  expression:'',
+  smile:'',
+  eyeSmile:'',
+  brows:'',
+  nose:'',
+  lips:'',
+  hairColor:'',
+  hairLength:'',
+  hairTexture:'',
+  hairPart:'',
+  hairStyle:'',
+  energy:''
+};
 
-  <script>
+let state = {...base};
+let activeStep = 'gender';
 
-    const ids = ['gender','age','appearance','outfit','location','light','camera','style','extra'];
+function renderSidebar() {
+  document.getElementById('sidebar').innerHTML = steps.map((s,i)=>{
+    const keys = s.groups.map(g=>g.key);
+    const done = keys.some(k=>state[k]);
 
+    return `
+      <div class="ng-step ${activeStep===s.id?'active':''} ${done?'done':''}" onclick="setStep('${s.id}')">
+        <span class="ng-num">${done?'✓':i+1}</span>
+        <span>${s.title}</span>
+      </div>
+    `;
+  }).join('');
+}
 
+function esc(v) {
+  return String(v).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+}
 
-    function generatePrompt() {
+function renderContent() {
+  const step = steps.find(s=>s.id===activeStep);
 
-      const gender = document.getElementById('gender').value;
+  document.getElementById('content').innerHTML = `
+    <h2>${step.title}</h2>
+    <div class="ng-subtitle">${step.subtitle}</div>
+    ${step.groups.map(group=>`
+      <div class="ng-group">
+        <div class="ng-group-title">${group.title}</div>
+        <div class="ng-options">
+          ${group.options.map(([label,value])=>`
+            <button class="ng-option ${state[group.key]===value?'selected':''}" onclick="selectOption('${group.key}','${esc(value)}')">
+              ${label}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
 
-      const age = document.getElementById('age').value;
+function setStep(id) {
+  activeStep = id;
+  render();
+}
 
-      const appearance = document.getElementById('appearance').value;
+function selectOption(key,value) {
+  state[key] = value.replace(/&#39;/g,"'").replace(/&quot;/g,'"');
+  render();
+}
 
-      const outfit = document.getElementById('outfit').value;
+function section(label, arr) {
+  const clean = arr.filter(Boolean);
+  if (!clean.length) return '';
+  return `${label} — <span class="ng-insert">${clean.join(', ')}</span>. `;
+}
 
-      const location = document.getElementById('location').value;
+function rawSection(arr) {
+  const clean = arr.filter(Boolean);
+  if (!clean.length) return '';
+  return `<span class="ng-insert">${clean.join(', ')}</span>. `;
+}
 
-      const light = document.getElementById('light').value;
+function getPromptHTML() {
+  const subject = [state.gender,state.age].filter(Boolean).join(' ');
+  const body = [state.bodyType,state.height];
+  const face = [state.faceShape,state.cheekbones,state.jawline,state.chin];
+  const eyes = [state.eyeColor,state.eyeShape];
+  const expression = [state.expression,state.smile,state.eyeSmile];
+  const hair = [state.hairColor,state.hairLength,state.hairTexture,state.hairPart,state.hairStyle];
 
-      const camera = document.getElementById('camera').value;
+  return `
+    Ультра-реалистичный студийный beauty-портрет
+    <span class="ng-insert">${subject}</span>,
+    кадрирование только голова и ключицы, камера на уровне глаз,
+    композиция строго по центру, прямой взгляд в объектив,
+    глаза — самая резкая точка фокуса.
+    Чистый белый бесшовный фон, без реквизита.
+    ${rawSection(body)}
+    ${rawSection(face)}
+    ${section('Кожа',[state.skin])}
+    ${section('Глаза',eyes)}
+    ${section('Выражение',expression)}
+    ${section('Брови',[state.brows])}
+    ${section('нос',[state.nose])}
+    ${section('губы',[state.lips])}
+    ${section('Волосы',hair)}
+    Одежда: минималистичный чёрный боди SKIMS на тонких бретелях, без рукавов.
+    Свет: мягкий рассеянный студийный, чистые белые, нежные тени,
+    естественные тона кожи; премиальный editorial realism —
+    аккуратные естественные поры, тонкая текстура кожи,
+    реалистичное подповерхностное рассеивание света,
+    гладко, но полностью «живое», без пластикового эффекта.
+    ${section('Общее впечатление',[state.energy])}
+  `;
+}
 
-      const style = document.getElementById('style').value;
+function getPromptText() {
+  const div = document.createElement('div');
+  div.innerHTML = getPromptHTML();
+  return div.textContent.replace(/\s+/g,' ').trim();
+}
 
-      const extra = document.getElementById('extra').value;
+function renderPrompt() {
+  const html = getPromptHTML();
+  const text = getPromptText();
 
+  document.getElementById('prompt').innerHTML = html;
+  document.getElementById('count').textContent = text.length + ' симв.';
+}
 
+function resetBuilder() {
+  state = {...base};
+  activeStep = 'gender';
+  render();
+}
 
-      const prompt = `Create an ${style} of a ${age} ${gender}, ${appearance}, wearing ${outfit}, standing in ${location}. Lighting: ${light}. Camera: ${camera}. ${extra}. Highly detailed face, realistic skin texture, natural proportions, cinematic color grading, premium visual quality.`;
+function copyPrompt() {
+  navigator.clipboard.writeText(getPromptText()).then(()=>{
+    const toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(()=>toast.style.display='none',1400);
+  });
+}
 
+function render() {
+  renderSidebar();
+  renderContent();
+  renderPrompt();
+}
 
-
-      document.getElementById('prompt').textContent = prompt;
-
-    }
-
-
-
-    function copyPrompt() {
-
-      const text = document.getElementById('prompt').textContent;
-
-      navigator.clipboard.writeText(text).then(() => {
-
-        const toast = document.getElementById('toast');
-
-        toast.style.display = 'block';
-
-        setTimeout(() => toast.style.display = 'none', 1800);
-
-      });
-
-    }
-
-
-
-    function resetBuilder() {
-
-      ids.forEach(id => {
-
-        const el = document.getElementById(id);
-
-        if (el.tagName === 'SELECT') el.selectedIndex = 0;
-
-      });
-
-      document.getElementById('extra').value = 'looking into camera, serious calm expression';
-
-      generatePrompt();
-
-    }
-
-
-
-    ids.forEach(id => document.getElementById(id).addEventListener('input', generatePrompt));
-
-    generatePrompt();
-
-  </script>
+render();
+</script>
 
 </body>
-
 </html>
+Все блоки
+Обложка	Заголовок: средний	Лид	Текст	Фраза	Изображение	Галерея	Линия		
+Zero
+Vibe
